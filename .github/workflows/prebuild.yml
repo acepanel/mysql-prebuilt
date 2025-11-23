@@ -1,7 +1,7 @@
 name: MySQL Prebuilt Packages
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 concurrency:
   group: "prebuild-mysql"
@@ -39,10 +39,16 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -y
             apt-get install -y bash wget git make systemd p7zip p7zip-full
-            apt-get install -y build-essential cmake doxygen graphviz bison libncurses5-dev libtirpc-dev libssl-dev pkg-config libsystemd-dev libldap2-dev libudev-dev libsasl2-dev libsasl2-modules-gssapi-mit patchelf libkrb5-dev zlib1g-dev libreadline-dev libcurl4-openssl-dev libatomic1 libquadmath0
-            # Debian 13 单独安装 systemd-dev
-            if [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" = "13" ]; then
+            apt-get install -y build-essential cmake doxygen graphviz bison libncurses5-dev libtirpc-dev libssl-dev pkg-config libsystemd-dev libldap2-dev libudev-dev libsasl2-dev libsasl2-modules-gssapi-mit patchelf libkrb5-dev zlib1g-dev libreadline-dev libcurl4-openssl-dev libaio-dev libatomic1 libquadmath0
+            # Debian 13+ 和 Ubuntu 25+ 单独安装 systemd-dev
+            if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "13" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "25" ]; }; then
               apt-get install -y systemd-dev
+            fi
+            # Debian 12+ 和 Ubuntu 24+ 需要安装 libaio1t64，其他系统安装 libaio1 即可
+            if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "12" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "24" ]; }; then
+              apt-get install -y libaio1t64
+            else
+              apt-get install -y libaio1
             fi
           elif command -v dnf >/dev/null 2>&1; then
             dnf makecache
@@ -56,7 +62,7 @@ jobs:
             dnf config-manager --set-enabled epel
             dnf install -y bash wget git make systemd p7zip p7zip-plugins
             dnf groupinstall "Development Tools" -y
-            dnf install -y cmake doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel readline-devel libcurl-devel libatomic libquadmath-devel
+            dnf install -y cmake doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel readline-devel libcurl-devel libaio libaio-devel libatomic libquadmath-devel
           fi
       - name: Build MySQL
         run: |
