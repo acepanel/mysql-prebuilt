@@ -44,8 +44,8 @@ jobs:
             if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "13" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "25" ]; }; then
               apt-get install -y systemd-dev
             fi
-            # Debian 12+ 和 Ubuntu 24+ 需要安装 libaio1t64，其他系统安装 libaio1 即可
-            if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "12" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "24" ]; }; then
+            # Debian 13+ 和 Ubuntu 24+ 需要安装 libaio1t64，其他系统安装 libaio1 即可
+            if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "13" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "24" ]; }; then
               apt-get install -y libaio1t64
             else
               apt-get install -y libaio1
