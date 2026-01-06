@@ -62,7 +62,7 @@ if [ "$?" != "0" ]; then
 fi
 
 # 安装
-make install
+ninja install
 if [ "$?" != "0" ]; then
     rm -rf ${mysql_path}
     echo "Installation failed"
