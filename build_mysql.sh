@@ -1,10 +1,11 @@
 #!/bin/bash
 
 channel=${1}
-version=${2}
+slug=${2}
+version=${3}
 mysql_path="/opt/ace/server/mysql"
 
-echo "Building Percona Server ${version} for ${channel}"
+echo "Building ${channel} ${slug} ${version}"
 
 # 准备目录
 rm -rf ${mysql_path}
@@ -12,7 +13,15 @@ mkdir -p ${mysql_path}
 cd ${mysql_path}
 
 # 下载源码
-git clone --depth 1 --branch "Percona-Server-${version}" https://github.com/percona/percona-server.git src
+if [[ ${channel} == "mysql" ]]; then
+    git clone --depth 1 --branch "mysql-${version}" https://github.com/mysql/mysql-server.git src
+elif [[ ${channel} == "percona" ]]; then
+    git clone --depth 1 --branch "Percona-Server-${version}" https://github.com/percona/percona-server.git src
+else
+    echo "Unknown channel: ${channel}"
+    exit 1
+fi
+
 cd src
 git submodule init
 git submodule update
@@ -22,19 +31,19 @@ mkdir dist
 cd dist
 
 # 57 禁用嵌入式服务器
-if [[ ${channel} == "percona_57" ]]; then
+if [[ ${version} == "57" ]]; then
     WITHOUT_EMBEDDED="-DWITH_EMBEDDED_SERVER=0 -DWITH_EMBEDDED_SHARED_LIBRARY=0"
 fi
 
 # 57 和 80 需要 boost 和禁用 TOKUDB
-if [[ ${channel} == "percona_57" ]] || [[ ${channel} == "percona_80" ]]; then
+if [[ ${version} == "57" ]] || [[ ${version} == "80" ]]; then
     WITH_BOOST="-DDOWNLOAD_BOOST=1 -DWITH_BOOST=${mysql_path}/src/boost"
     WITHOUT_TOKUDB="-DWITH_TOKUDB=0"
 fi
 
 # 80+ 优化
 WITH_OPT="-DWITH_MYSQLX=0 -DWITH_ROUTER=0 -DWITH_LTO=1 -DCOMPRESS_DEBUG_SECTIONS=1"
-if [[ ${channel} == "percona_57" ]]; then
+if [[ ${version} == "57" ]]; then
     WITH_OPT=""
 fi
 
@@ -73,7 +82,7 @@ rm -rf ${mysql_path}/bin/mysql_embedded
 
 # 精简压缩
 strip -s ${mysql_path}/bin/*
-7z a -m0=lzma2 -ms=on -mx=9 "percona-server-${version}.7z" *
+7z a -m0=lzma2 -ms=on -mx=9 "${channel}-server-${version}.7z" *
 if [ "$?" != "0" ]; then
     rm -rf ${mysql_path}
     echo "Packaging failed"

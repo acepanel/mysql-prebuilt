@@ -14,9 +14,12 @@ jobs:
       fail-fast: false
       matrix:
         mysql:
-          - { channel: "percona_57", version: "5.7.44-53" }
-          - { channel: "percona_80", version: "8.0.43-34" }
-          - { channel: "percona_84", version: "8.4.6-6" }
+          - { channel: "mysql", slug: "57", version: "5.7.44" }
+          - { channel: "mysql", slug: "80", version: "8.0.44" }
+          - { channel: "mysql", slug: "84", version: "8.4.7" }
+          - { channel: "percona", slug: "57", version: "5.7.44-53" }
+          - { channel: "percona", slug: "80", version: "8.0.44-35" }
+          - { channel: "percona", slug: "84", version: "8.4.7-7" }
         os:
           # Debian
           - { name: "debian", version: "12", image: "debian:12" }
@@ -67,7 +70,7 @@ jobs:
       - name: Build MySQL
         run: |
           chmod +x build_mysql.sh
-          ./build_mysql.sh "${{ matrix.mysql.channel }}" "${{ matrix.mysql.version }}"
+          ./build_mysql.sh "${{ matrix.mysql.channel }}" "${{ matrix.mysql.slug }}" "${{ matrix.mysql.version }}"
       - name: Package MySQL
         id: package
         run: |
