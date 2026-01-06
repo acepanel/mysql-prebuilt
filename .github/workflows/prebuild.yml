@@ -40,8 +40,8 @@ jobs:
         run: |
           if command -v apt-get >/dev/null 2>&1; then
             # 人才大便和乌班图 2026 了还在用 HTTP 源，改成 HTTPS 源
-            sed -i 's|http://|https://|g' /etc/apt/sources.list
-            sed -i 's|http://|https://|g' /etc/apt/sources.list.d/*.list || true
+            sed -i.bak 's|http://|https://|g' /etc/apt/sources.list || true
+            sed -i.bak 's|http://|https://|g' /etc/apt/sources.list.d/*.list || true
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -y
             apt-get install -y bash wget git make systemd p7zip p7zip-full
