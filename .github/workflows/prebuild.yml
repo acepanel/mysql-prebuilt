@@ -76,7 +76,7 @@ jobs:
             retry_command dnf config-manager --set-enabled epel
             retry_command dnf install -y bash wget git make systemd p7zip p7zip-plugins
             retry_command dnf groupinstall "Development Tools" -y
-            retry_command dnf install -y cmake ninja-build doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel readline-devel libicu-devel protobuf-devel protobuf-compiler libcurl-devel libaio libaio-devel libatomic libquadmath-devel
+            retry_command dnf install -y cmake ninja-build doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel readline-devel libicu-devel protobuf-lite-devel protobuf-devel protobuf-compiler libcurl-devel libaio libaio-devel libatomic libquadmath-devel
           fi
       - name: Build MySQL
         run: |
