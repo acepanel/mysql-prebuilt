@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    name: ${{ matrix.mysql.version }} for ${{ matrix.os.name }} ${{ matrix.os.version }}
+    name: ${{ matrix.mysql.channel }} ${{ matrix.mysql.version }} for ${{ matrix.os.name }} ${{ matrix.os.version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
