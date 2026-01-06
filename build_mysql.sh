@@ -5,7 +5,7 @@ slug=${2}
 version=${3}
 mysql_path="/opt/ace/server/mysql"
 
-echo "Building ${channel} ${slug} ${version}"
+echo "Building ${channel} ${version}"
 
 # 准备目录
 rm -rf ${mysql_path}
@@ -31,19 +31,19 @@ mkdir dist
 cd dist
 
 # 57 禁用嵌入式服务器
-if [[ ${version} == "57" ]]; then
+if [[ ${slug} == "57" ]]; then
     WITHOUT_EMBEDDED="-DWITH_EMBEDDED_SERVER=0 -DWITH_EMBEDDED_SHARED_LIBRARY=0"
 fi
 
 # 57 和 80 需要 boost 和禁用 TOKUDB
-if [[ ${version} == "57" ]] || [[ ${version} == "80" ]]; then
+if [[ ${slug} == "57" ]] || [[ ${slug} == "80" ]]; then
     WITH_BOOST="-DDOWNLOAD_BOOST=1 -DWITH_BOOST=${mysql_path}/src/boost"
     WITHOUT_TOKUDB="-DWITH_TOKUDB=0"
 fi
 
 # 80+ 优化
 WITH_OPT="-DWITH_MYSQLX=0 -DWITH_ROUTER=0 -DWITH_LTO=1 -DCOMPRESS_DEBUG_SECTIONS=1"
-if [[ ${version} == "57" ]]; then
+if [[ ${slug} == "57" ]]; then
     WITH_OPT=""
 fi
 
