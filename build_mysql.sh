@@ -36,6 +36,11 @@ cd build
 if [[ ${slug} == "57" ]] || [[ ${slug} == "80" ]]; then
     WITH_BOOST="-DDOWNLOAD_BOOST=1 -DWITH_BOOST=${mysql_path}/src/boost"
 fi
+MAX_INDEXES=255
+# MariaDB 只能设置 128
+if [[ ${channel} == "mariadb" ]]; then
+    MAX_INDEXES=128
+fi
 
 # 配置编译选项
 # INSTALL_SYSCONFDIR 和 PLUGIN_ 是 MariaDB 特有选项
@@ -64,7 +69,7 @@ cmake -G Ninja .. \
     -DWITH_ROCKSDB=0 \
     -DDEFAULT_CHARSET=utf8mb4 \
     -DDEFAULT_COLLATION=utf8mb4_general_ci \
-    -DMAX_INDEXES=255 \
+    -DMAX_INDEXES=${MAX_INDEXES} \
     -DWITH_RAPID=0 \
     -DWITH_NDBMTD=0 \
     -DENABLED_LOCAL_INFILE=1 \
