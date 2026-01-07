@@ -92,9 +92,13 @@ cmake -G Ninja .. \
     -DSYSTEMD_PID_DIR=${mysql_path} \
     -DWITH_EMBEDDED_SERVER=OFF \
     -DWITH_EMBEDDED_SHARED_LIBRARY=OFF \
+    -DWITH_ICU=system \
+    -DWITH_PROTOBUF=system \
     ${WITH_BOOST} \
     -DWITH_MYSQLX=OFF \
     -DWITH_ROUTER=OFF \
+    -DWITH_MEB=OFF \
+    -DWITH_GROUP_REPLICATION=OFF \
     -DWITH_LTO=ON \
     -DCOMPRESS_DEBUG_SECTIONS=ON
 if [ "$?" != "0" ]; then
