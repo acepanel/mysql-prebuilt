@@ -39,7 +39,7 @@ fi
 MAX_INDEXES=255
 # MariaDB 只能设置 128
 [[ ${channel} == "mariadb" ]] && MAX_INDEXES=128
-WITH_SYSTEMD=1
+WITH_SYSTEMD=ON
 # MariaDB 要使用 yes
 [[ ${channel} == "mariadb" ]] && WITH_SYSTEMD="yes"
 
@@ -76,27 +76,27 @@ cmake -G Ninja .. \
     -DPLUGIN_ROCKSDB=NO \
     -DWITH_TOKUDB=0 \
     -DWITH_ROCKSDB=0 \
+    -DWITH_COREDUMPER=0 \
     -DDEFAULT_CHARSET=utf8mb4 \
     -DDEFAULT_COLLATION=utf8mb4_general_ci \
     -DMAX_INDEXES=${MAX_INDEXES} \
-    -DWITH_RAPID=0 \
-    -DWITH_NDBMTD=0 \
-    -DENABLED_LOCAL_INFILE=1 \
-    -DWITH_COREDUMPER=0 \
-    -DWITH_BUILD_ID=0 \
-    -DWITH_DEBUG=0 \
+    -DWITH_RAPID=OFF \
+    -DWITH_NDBMTD=OFF \
+    -DENABLED_LOCAL_INFILE=ON \
+    -DWITH_BUILD_ID=OFF \
+    -DWITH_DEBUG=OFF \
     -DWITH_UNIT_TESTS=OFF \
     -DINSTALL_MYSQLTESTDIR= \
     -DCMAKE_BUILD_TYPE=Release \
     -DWITH_SYSTEMD=${WITH_SYSTEMD} \
     -DSYSTEMD_PID_DIR=${mysql_path} \
-    -DWITH_EMBEDDED_SERVER=0 \
-    -DWITH_EMBEDDED_SHARED_LIBRARY=0 \
+    -DWITH_EMBEDDED_SERVER=OFF \
+    -DWITH_EMBEDDED_SHARED_LIBRARY=OFF \
     ${WITH_BOOST} \
-    -DWITH_MYSQLX=0 \
-    -DWITH_ROUTER=0 \
-    -DWITH_LTO=1 \
-    -DCOMPRESS_DEBUG_SECTIONS=1
+    -DWITH_MYSQLX=OFF \
+    -DWITH_ROUTER=OFF \
+    -DWITH_LTO=ON \
+    -DCOMPRESS_DEBUG_SECTIONS=ON
 if [ "$?" != "0" ]; then
     rm -rf ${mysql_path}
     echo "Compilation initialization failed"
