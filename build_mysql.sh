@@ -29,7 +29,10 @@ git submodule init
 git submodule update
 
 # 清理 X 插件
-sed -i.bak '1i\RETURN()' plugin/x/CMakeLists.txt
+sed -i '1i\RETURN()' plugin/x/CMakeLists.txt
+sed -i '1i\RETURN()' extra/protobuf/CMakeLists.txt
+sed -i '1i\RETURN()' plugin/group_replication/CMakeLists.txt
+sed -i '/^ADD_SUBDIRECTORY(protobuf)/d' sql/CMakeLists.txt
 
 # 编译
 mkdir build
