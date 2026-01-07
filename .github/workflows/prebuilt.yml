@@ -91,13 +91,13 @@ jobs:
           OS_NAME="${{ matrix.os.name }}"
           OS_VERSION="${{ matrix.os.version }}"
           PACKAGE_NAME="${{ matrix.mysql.channel }}-${{ matrix.mysql.version }}-${OS_NAME}${OS_VERSION}-${ARCH}"
-          mv /opt/ace/server/mysql/${{ matrix.mysql.channel }}-*.7z "${PACKAGE_NAME}.7z"
+          mv /opt/ace/server/mysql/${{ matrix.mysql.channel }}-*.tar.7z "${PACKAGE_NAME}.tar.7z"
           echo "name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.name }}
-          path: ${{ steps.package.outputs.name }}.7z
+          path: ${{ steps.package.outputs.name }}.tar.7z
           compression-level: 0
           retention-days: 90
   create-release:
