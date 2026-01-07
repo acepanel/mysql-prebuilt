@@ -38,9 +38,10 @@ if [[ ${slug} == "57" ]] || [[ ${slug} == "80" ]]; then
 fi
 MAX_INDEXES=255
 # MariaDB 只能设置 128
-if [[ ${channel} == "mariadb" ]]; then
-    MAX_INDEXES=128
-fi
+[[ ${channel} == "mariadb" ]] && MAX_INDEXES=128
+WITH_SYSTEMD=1
+# MariaDB 要使用 yes
+[[ ${channel} == "mariadb" ]] && WITH_SYSTEMD="yes"
 
 # 配置编译选项
 # INSTALL_SYSCONFDIR 和 PLUGIN_ 是 MariaDB 特有选项
@@ -79,7 +80,7 @@ cmake -G Ninja .. \
     -DWITH_UNIT_TESTS=OFF \
     -DINSTALL_MYSQLTESTDIR= \
     -DCMAKE_BUILD_TYPE=Release \
-    -DWITH_SYSTEMD=1 \
+    -DWITH_SYSTEMD=${WITH_SYSTEMD} \
     -DSYSTEMD_PID_DIR=${mysql_path} \
     -DWITH_EMBEDDED_SERVER=0 \
     -DWITH_EMBEDDED_SHARED_LIBRARY=0 \
