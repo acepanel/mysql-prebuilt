@@ -136,8 +136,8 @@ rm -rf ${mysql_path}/bin/mysql_embedded
 
 # 精简压缩
 strip -s ${mysql_path}/bin/*
-tar -cvf "${channel}-server-${version}.tar" *
-7z a -m0=lzma2 -ms=on -mx=9 "${channel}-server-${version}.tar.7z" "${channel}-server-${version}.tar"
+tar -cvf "${channel}-${version}.tar" *
+7z a -m0=lzma2 -ms=on -mx=9 "${channel}-${version}.tar.7z" "${channel}-${version}.tar"
 if [ "$?" != "0" ]; then
     rm -rf ${mysql_path}
     echo "Packaging failed"
