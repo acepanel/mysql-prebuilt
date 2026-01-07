@@ -30,8 +30,8 @@ jobs:
           - { name: "ubuntu", version: "22", image: "ubuntu:22.04" }
           - { name: "ubuntu", version: "24", image: "ubuntu:24.04" }
           # RHEL-based
-          - { name: "rhel", version: "9", image: "redhat/ubi9-init:latest" }
-          - { name: "rhel", version: "10", image: "redhat/ubi10-init:latest" }
+          - { name: "rhel", version: "9", image: "almalinux:9" }
+          - { name: "rhel", version: "10", image: "almalinux:10" }
     container:
       image: ${{ matrix.os.image }}
       options: --privileged
