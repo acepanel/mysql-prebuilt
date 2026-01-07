@@ -33,6 +33,7 @@ sed -i '1i\RETURN()' plugin/x/CMakeLists.txt
 sed -i '1i\RETURN()' extra/protobuf/CMakeLists.txt
 sed -i '1i\RETURN()' plugin/group_replication/CMakeLists.txt
 sed -i '/^ADD_SUBDIRECTORY(protobuf)/d' sql/CMakeLists.txt
+sed -i '/^TARGET_LINK_LIBRARIES(sql_main ext::libprotobuf-lite)/d' sql/CMakeLists.txt
 
 # 编译
 mkdir build
