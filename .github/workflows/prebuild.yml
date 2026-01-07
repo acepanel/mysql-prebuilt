@@ -55,7 +55,7 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             retry_command apt-get update -y
             retry_command apt-get install -y bash wget git make systemd p7zip p7zip-full
-            retry_command apt-get install -y build-essential cmake ninja-build doxygen graphviz bison libncurses5-dev libtirpc-dev libssl-dev pkg-config libsystemd-dev libldap2-dev libudev-dev libsasl2-dev libsasl2-modules-gssapi-mit patchelf libkrb5-dev zlib1g-dev libbz2-dev liblz4-dev libreadline-dev libcurl4-openssl-dev libxml2-dev libpcre2-dev libaio-dev libatomic1 libquadmath0
+            retry_command apt-get install -y build-essential cmake ninja-build doxygen graphviz bison libncurses5-dev libtirpc-dev libssl-dev pkg-config libsystemd-dev libldap2-dev libudev-dev libsasl2-dev libsasl2-modules-gssapi-mit patchelf libkrb5-dev zlib1g-dev libbz2-dev liblz4-dev liblzma-dev libreadline-dev libcurl4-openssl-dev libxml2-dev libpcre2-dev libaio-dev libatomic1 libquadmath0
             # Debian 13+ 和 Ubuntu 25+ 单独安装 systemd-dev
             if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "13" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "25" ]; }; then
               retry_command apt-get install -y systemd-dev
@@ -78,7 +78,7 @@ jobs:
             retry_command dnf config-manager --set-enabled epel
             retry_command dnf install -y bash wget git make systemd p7zip p7zip-plugins
             retry_command dnf groupinstall "Development Tools" -y
-            retry_command dnf install -y cmake ninja-build doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel bzip2-devel lz4-devel readline-devel libcurl-devel libxml2-devel pcre2-devel libaio libaio-devel libatomic libquadmath-devel
+            retry_command dnf install -y cmake ninja-build doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel bzip2-devel lz4-devel xz-devel readline-devel libcurl-devel libxml2-devel pcre2-devel libaio libaio-devel libatomic libquadmath-devel
           fi
       - name: Build MySQL
         run: |
