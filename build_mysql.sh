@@ -28,6 +28,9 @@ cd src
 git submodule init
 git submodule update
 
+# 清理 X 插件
+sed -i.bak '1i\RETURN()' plugin/x/CMakeLists.txt
+
 # 编译
 mkdir build
 cd build
