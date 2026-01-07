@@ -127,6 +127,7 @@ rm -rf ${mysql_path}/bin/mysql_ldb
 rm -rf ${mysql_path}/bin/sst_dump
 rm -rf ${mysql_path}/bin/mysql_client_test*
 rm -rf ${mysql_path}/bin/mysqltest*
+rm -rf ${mysql_path}/bin/rcmysql # MariaDB 一个奇怪的文件
 rm -rf ${mysql_path}/bin/mysql_embedded
 
 # 精简压缩
