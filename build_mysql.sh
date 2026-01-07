@@ -17,6 +17,8 @@ if [[ ${channel} == "mysql" ]]; then
     git clone --depth 1 --branch "mysql-${version}" https://github.com/mysql/mysql-server.git src
 elif [[ ${channel} == "percona" ]]; then
     git clone --depth 1 --branch "Percona-Server-${version}" https://github.com/percona/percona-server.git src
+elif [[ ${channel} == "mariadb" ]]; then
+    git clone --depth 1 --branch "mariadb-${version}" https://github.com/mariadb/server.git src
 else
     echo "Unknown channel: ${channel}"
     exit 1
@@ -30,24 +32,57 @@ git submodule update
 mkdir build
 cd build
 
-# 57 禁用嵌入式服务器
-if [[ ${slug} == "57" ]]; then
-    WITHOUT_EMBEDDED="-DWITH_EMBEDDED_SERVER=0 -DWITH_EMBEDDED_SHARED_LIBRARY=0"
-fi
-
 # 57 和 80 需要 boost 和禁用 TOKUDB
 if [[ ${slug} == "57" ]] || [[ ${slug} == "80" ]]; then
     WITH_BOOST="-DDOWNLOAD_BOOST=1 -DWITH_BOOST=${mysql_path}/src/boost"
-    WITHOUT_TOKUDB="-DWITH_TOKUDB=0"
 fi
 
-# 80+ 优化
-WITH_OPT="-DWITH_MYSQLX=0 -DWITH_ROUTER=0 -DWITH_LTO=1 -DCOMPRESS_DEBUG_SECTIONS=1"
-if [[ ${slug} == "57" ]]; then
-    WITH_OPT=""
-fi
-
-cmake -G Ninja .. -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_INSTALL_PREFIX=${mysql_path} -DMYSQL_DATADIR=${mysql_path}/data -DSYSCONFDIR=${mysql_path}/conf -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DWITH_ARCHIVE_STORAGE_ENGINE=0 -DWITH_EXAMPLE_STORAGE_ENGINE=0 -DWITH_FEDERATED_STORAGE_ENGINE=0 -DWITH_BLACKHOLE_STORAGE_ENGINE=0 -DWITH_PARTITION_STORAGE_ENGINE=0 -DWITH_NDBCLUSTER_STORAGE_ENGINE=0 ${WITHOUT_TOKUDB} -DWITH_ROCKSDB=0 -DDEFAULT_CHARSET=utf8mb4 -DDEFAULT_COLLATION=utf8mb4_general_ci -DMAX_INDEXES=255 -DWITH_RAPID=0 -DWITH_NDBMTD=0 -DENABLED_LOCAL_INFILE=1 -DWITH_COREDUMPER=0 -DWITH_BUILD_ID=0 -DWITH_DEBUG=0 -DWITH_UNIT_TESTS=OFF -DINSTALL_MYSQLTESTDIR= -DCMAKE_BUILD_TYPE=Release -DWITH_ICU=system -DWITH_PROTOBUF=system -DWITH_SYSTEMD=1 -DSYSTEMD_PID_DIR=${mysql_path} ${WITH_BOOST} ${WITH_OPT} ${WITHOUT_EMBEDDED}
+# 配置编译选项
+# INSTALL_SYSCONFDIR 和 PLUGIN_ 是 MariaDB 特有选项
+cmake -G Ninja .. \
+    -DCMAKE_C_COMPILER=gcc \
+    -DCMAKE_CXX_COMPILER=g++ \
+    -DCMAKE_INSTALL_PREFIX=${mysql_path} \
+    -DMYSQL_DATADIR=${mysql_path}/data \
+    -DSYSCONFDIR=${mysql_path}/conf \
+    -DINSTALL_SYSCONFDIR=${mysql_path}/conf \
+    -DWITH_MYISAM_STORAGE_ENGINE=1 \
+    -DWITH_INNOBASE_STORAGE_ENGINE=1 \
+    -DWITH_ARCHIVE_STORAGE_ENGINE=0 \
+    -DWITH_EXAMPLE_STORAGE_ENGINE=0 \
+    -DWITH_FEDERATED_STORAGE_ENGINE=0 \
+    -DWITH_BLACKHOLE_STORAGE_ENGINE=0 \
+    -DWITH_PARTITION_STORAGE_ENGINE=0 \
+    -DWITH_NDBCLUSTER_STORAGE_ENGINE=0 \
+    -DPLUGIN_ARCHIVE=0 \
+    -DPLUGIN_BLACKHOLE=0 \
+    -DPLUGIN_FEDERATED=0 \
+    -DPLUGIN_EXAMPLE=0 \
+    -DPLUGIN_PARTITION=0 \
+    -DPLUGIN_ROCKSDB=0 \
+    -DWITH_TOKUDB=0 \
+    -DWITH_ROCKSDB=0 \
+    -DDEFAULT_CHARSET=utf8mb4 \
+    -DDEFAULT_COLLATION=utf8mb4_general_ci \
+    -DMAX_INDEXES=255 \
+    -DWITH_RAPID=0 \
+    -DWITH_NDBMTD=0 \
+    -DENABLED_LOCAL_INFILE=1 \
+    -DWITH_COREDUMPER=0 \
+    -DWITH_BUILD_ID=0 \
+    -DWITH_DEBUG=0 \
+    -DWITH_UNIT_TESTS=OFF \
+    -DINSTALL_MYSQLTESTDIR= \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DWITH_SYSTEMD=1 \
+    -DSYSTEMD_PID_DIR=${mysql_path} \
+    -DWITH_EMBEDDED_SERVER=0 \
+    -DWITH_EMBEDDED_SHARED_LIBRARY=0 \
+    ${WITH_BOOST} \
+    -DWITH_MYSQLX=0 \
+    -DWITH_ROUTER=0 \
+    -DWITH_LTO=1 \
+    -DCOMPRESS_DEBUG_SECTIONS=1
 if [ "$?" != "0" ]; then
     rm -rf ${mysql_path}
     echo "Compilation initialization failed"
