@@ -48,6 +48,9 @@ if [[ ${slug} == "57" ]] || [[ ${slug} == "80" ]]; then
     WITH_BOOST="-DDOWNLOAD_BOOST=1 -DWITH_BOOST=${mysql_path}/src/boost"
 fi
 MAX_INDEXES=255
+# 只对 84 启用 RocksDB，不然文件太大了
+WITH_ROCKSDB=0
+[[ ${slug} == "84" ]] && WITH_ROCKSDB=1
 # MariaDB 只能设置 128
 [[ ${channel} == "mariadb" ]] && MAX_INDEXES=128
 WITH_SYSTEMD=ON
@@ -86,7 +89,7 @@ cmake -G Ninja .. \
     -DPLUGIN_MROONGA=NO \
     -DPLUGIN_ROCKSDB=YES \
     -DWITH_TOKUDB=0 \
-    -DWITH_ROCKSDB=1 \
+    -DWITH_ROCKSDB=${WITH_ROCKSDB} \
     -DWITH_COREDUMPER=0 \
     -DDEFAULT_CHARSET=utf8mb4 \
     -DDEFAULT_COLLATION=utf8mb4_general_ci \
