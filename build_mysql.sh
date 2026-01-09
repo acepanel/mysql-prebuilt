@@ -7,6 +7,17 @@ mysql_path="/opt/ace/server/mysql"
 
 echo "Building ${channel} ${version}"
 
+retry_command() {
+    local max_attempts=999
+    local attempt=1
+    until "$@"; do
+        echo "命令执行失败 (尝试 $attempt/$max_attempts)，10秒后重试..."
+        sleep 10
+        attempt=$((attempt + 1))
+    done
+    echo "命令执行成功"
+}
+
 # 准备目录
 rm -rf ${mysql_path}
 mkdir -p ${mysql_path}
@@ -14,19 +25,19 @@ cd ${mysql_path}
 
 # 下载源码
 if [[ ${channel} == "mysql" ]]; then
-    git clone --depth 1 --branch "mysql-${version}" https://github.com/mysql/mysql-server.git src
+    retry_command git clone --depth 1 --branch "mysql-${version}" https://github.com/mysql/mysql-server.git src
 elif [[ ${channel} == "percona" ]]; then
-    git clone --depth 1 --branch "Percona-Server-${version}" https://github.com/percona/percona-server.git src
+    retry_command git clone --depth 1 --branch "Percona-Server-${version}" https://github.com/percona/percona-server.git src
 elif [[ ${channel} == "mariadb" ]]; then
-    git clone --depth 1 --branch "mariadb-${version}" https://github.com/mariadb/server.git src
+    retry_command git clone --depth 1 --branch "mariadb-${version}" https://github.com/mariadb/server.git src
 else
     echo "Unknown channel: ${channel}"
     exit 1
 fi
 
 cd src
-git submodule init
-git submodule update
+retry_command git submodule init
+retry_command git submodule update
 
 # 编译
 mkdir build
