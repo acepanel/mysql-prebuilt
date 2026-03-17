@@ -21,7 +21,7 @@ jobs:
           - { channel: "mysql", slug: "84", version: "8.4.8" }
           - { channel: "percona", slug: "57", version: "5.7.44-54" }
           - { channel: "percona", slug: "80", version: "8.0.45-36" }
-          - { channel: "percona", slug: "84", version: "8.4.7-7" }
+          - { channel: "percona", slug: "84", version: "8.4.8-8" }
         os:
           # Debian
           - { name: "debian", version: "12", image: "debian:12" }
