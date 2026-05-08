@@ -56,7 +56,7 @@ jobs:
           if command -v apt-get >/dev/null 2>&1; then
             export DEBIAN_FRONTEND=noninteractive
             retry_command apt-get update -y
-            retry_command apt-get install -y bash wget git make systemd p7zip p7zip-full
+            retry_command apt-get install -y bash wget git make systemd xz-utils
             retry_command apt-get install -y build-essential cmake ninja-build doxygen graphviz bison libncurses5-dev libtirpc-dev libssl-dev pkg-config libsystemd-dev libldap2-dev libudev-dev libsasl2-dev libsasl2-modules-gssapi-mit patchelf libkrb5-dev zlib1g-dev libbz2-dev liblz4-dev liblzma-dev libreadline-dev libcurl4-openssl-dev libxml2-dev libpcre2-dev libaio-dev libatomic1 libquadmath0
             # Debian 13+ 和 Ubuntu 25+ 单独安装 systemd-dev
             if { [ "${{ matrix.os.name }}" = "debian" ] && [ "${{ matrix.os.version }}" -ge "13" ]; } || { [ "${{ matrix.os.name }}" = "ubuntu" ] && [ "${{ matrix.os.version }}" -ge "25" ]; }; then
@@ -78,7 +78,7 @@ jobs:
             fi
             retry_command dnf install -y epel-release
             retry_command dnf config-manager --set-enabled epel
-            retry_command dnf install -y bash wget git make systemd p7zip p7zip-plugins
+            retry_command dnf install -y bash wget git make systemd xz
             retry_command dnf groupinstall "Development Tools" -y
             retry_command dnf install -y cmake ninja-build doxygen graphviz bison ncurses-devel libtirpc-devel openssl-devel pkg-config systemd-devel openldap-devel libudev-devel cyrus-sasl-devel cyrus-sasl-scram patchelf rpcgen rpcsvc-proto-devel krb5-devel zlib-devel bzip2-devel lz4-devel xz-devel readline-devel libcurl-devel libxml2-devel pcre2-devel libaio libaio-devel libatomic libquadmath-devel
           fi
@@ -93,13 +93,13 @@ jobs:
           OS_NAME="${{ matrix.os.name }}"
           OS_VERSION="${{ matrix.os.version }}"
           PACKAGE_NAME="${{ matrix.mysql.channel }}-${{ matrix.mysql.version }}-${OS_NAME}${OS_VERSION}-${ARCH}"
-          mv /opt/ace/server/mysql/${{ matrix.mysql.channel }}-*.tar.7z "${PACKAGE_NAME}.tar.7z"
+          mv /opt/ace/server/mysql/${{ matrix.mysql.channel }}-*.tar.xz "${PACKAGE_NAME}.tar.xz"
           echo "name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.package.outputs.name }}
-          path: ${{ steps.package.outputs.name }}.tar.7z
+          path: ${{ steps.package.outputs.name }}.tar.xz
           compression-level: 0
           retention-days: 90
   create-release:
@@ -114,7 +114,7 @@ jobs:
       - name: Prepare release assets
         run: |
           mkdir -p release
-          find artifacts -name "*.7z" -exec cp {} release/ \;
+          find artifacts -name "*.tar.xz" -exec cp {} release/ \;
           ls -la release/
       - name: Create Release
         uses: softprops/action-gh-release@v2
