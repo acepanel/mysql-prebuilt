@@ -51,6 +51,9 @@ if [[ ${slug} == "57" ]]; then
         echo "Switched to CMake ${cmake_old_version} for MySQL 5.7"
         cmake --version
     fi
+    # MySQL 5.7 的狗屎代码在 GCC 14+ 编译不了，禁用相关警告
+    export CFLAGS="${CFLAGS} -Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=int-conversion -Wno-error=return-mismatch"
+    export CXXFLAGS="${CXXFLAGS} -Wno-error=incompatible-pointer-types"
 fi
 
 # 编译
