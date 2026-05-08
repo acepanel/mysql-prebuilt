@@ -39,6 +39,20 @@ cd src
 retry_command git submodule init
 retry_command git submodule update
 
+# MySQL 5.7 在 Ubuntu 26.04 等自带 CMake 4.x 的系统上需要回退到 CMake 3.31
+if [[ ${slug} == "57" ]]; then
+    cmake_major=$(cmake --version | head -n1 | awk '{print $3}' | cut -d. -f1)
+    if [ "${cmake_major}" -ge "4" ]; then
+        cmake_old_version=3.31.11
+        cmake_arch=$(uname -m)
+        retry_command wget -q "https://github.com/Kitware/CMake/releases/download/v${cmake_old_version}/cmake-${cmake_old_version}-linux-${cmake_arch}.tar.gz" -O /tmp/cmake-old.tar.gz
+        tar -xzf /tmp/cmake-old.tar.gz -C /tmp
+        export PATH="/tmp/cmake-${cmake_old_version}-linux-${cmake_arch}/bin:$PATH"
+        echo "Switched to CMake ${cmake_old_version} for MySQL 5.7"
+        cmake --version
+    fi
+fi
+
 # 编译
 mkdir build
 cd build
@@ -56,9 +70,6 @@ WITH_ROCKSDB=0
 WITH_SYSTEMD=ON
 # MariaDB 要使用 yes
 [[ ${channel} == "mariadb" ]] && WITH_SYSTEMD="yes"
-# 5.7 CMake 兼容
-CMAKE_POLICY=""
-[[ ${slug} == "57" ]] && CMAKE_POLICY="-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
 
 # 配置编译选项
 # INSTALL_SYSCONFDIR 和 PLUGIN_ 是 MariaDB 特有选项
@@ -111,7 +122,6 @@ cmake -G Ninja .. \
     -DWITH_EMBEDDED_SERVER=OFF \
     -DWITH_EMBEDDED_SHARED_LIBRARY=OFF \
     ${WITH_BOOST} \
-    ${CMAKE_POLICY} \
     -DWITH_MYSQLX=OFF \
     -DWITH_ROUTER=OFF \
     -DWITH_MEB=OFF \
