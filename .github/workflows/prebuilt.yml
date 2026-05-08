@@ -39,7 +39,7 @@ jobs:
       options: --privileged
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup container environment
         run: |
           retry_command() {
@@ -96,7 +96,7 @@ jobs:
           mv /opt/ace/server/mysql/${{ matrix.mysql.channel }}-*.tar.7z "${PACKAGE_NAME}.tar.7z"
           echo "name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.package.outputs.name }}
           path: ${{ steps.package.outputs.name }}.tar.7z
@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
       - name: Prepare release assets
