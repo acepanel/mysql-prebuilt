@@ -57,6 +57,7 @@ if [[ ${slug} == "57" ]]; then
         export CFLAGS="${CFLAGS} -Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=int-conversion -Wno-error=return-mismatch"
         export CXXFLAGS="${CXXFLAGS} -Wno-error=incompatible-pointer-types"
     fi
+    sed -i '/^#include <violite.h>/a #include <locale.h>' client/mysql.cc
 fi
 
 # 编译
