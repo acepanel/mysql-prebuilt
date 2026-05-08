@@ -52,8 +52,11 @@ if [[ ${slug} == "57" ]]; then
         cmake --version
     fi
     # MySQL 5.7 的狗屎代码在 GCC 14+ 编译不了，禁用相关警告
-    export CFLAGS="${CFLAGS} -Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=int-conversion -Wno-error=return-mismatch"
-    export CXXFLAGS="${CXXFLAGS} -Wno-error=incompatible-pointer-types"
+    gcc_major=$(gcc -dumpversion | cut -d. -f1)
+    if [ "${gcc_major}" -ge "14" ]; then
+        export CFLAGS="${CFLAGS} -Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=int-conversion -Wno-error=return-mismatch"
+        export CXXFLAGS="${CXXFLAGS} -Wno-error=incompatible-pointer-types"
+    fi
 fi
 
 # 编译
