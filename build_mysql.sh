@@ -56,6 +56,9 @@ WITH_ROCKSDB=0
 WITH_SYSTEMD=ON
 # MariaDB 要使用 yes
 [[ ${channel} == "mariadb" ]] && WITH_SYSTEMD="yes"
+# 5.7 CMake 兼容
+CMAKE_POLICY=""
+[[ ${slug} == "57" ]] && CMAKE_POLICY="-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
 
 # 配置编译选项
 # INSTALL_SYSCONFDIR 和 PLUGIN_ 是 MariaDB 特有选项
@@ -108,6 +111,7 @@ cmake -G Ninja .. \
     -DWITH_EMBEDDED_SERVER=OFF \
     -DWITH_EMBEDDED_SHARED_LIBRARY=OFF \
     ${WITH_BOOST} \
+    ${CMAKE_POLICY} \
     -DWITH_MYSQLX=OFF \
     -DWITH_ROUTER=OFF \
     -DWITH_MEB=OFF \
