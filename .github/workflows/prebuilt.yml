@@ -17,8 +17,9 @@ jobs:
           - { channel: "mariadb", slug: "114", version: "11.4.10" }
           - { channel: "mariadb", slug: "118", version: "11.8.6" }
           - { channel: "mysql", slug: "57", version: "5.7.44" }
-          - { channel: "mysql", slug: "80", version: "8.0.45" }
-          - { channel: "mysql", slug: "84", version: "8.4.8" }
+          - { channel: "mysql", slug: "80", version: "8.0.46" }
+          - { channel: "mysql", slug: "84", version: "8.4.9" }
+          - { channel: "mysql", slug: "97", version: "9.7.0" }
           - { channel: "percona", slug: "57", version: "5.7.44-54" }
           - { channel: "percona", slug: "80", version: "8.0.45-36" }
           - { channel: "percona", slug: "84", version: "8.4.8-8" }
@@ -29,6 +30,7 @@ jobs:
           # Ubuntu
           - { name: "ubuntu", version: "22", image: "ubuntu:22.04" }
           - { name: "ubuntu", version: "24", image: "ubuntu:24.04" }
+          - { name: "ubuntu", version: "26", image: "ubuntu:26.04" }
           # RHEL-based
           - { name: "rhel", version: "9", image: "almalinux:9" }
           - { name: "rhel", version: "10", image: "almalinux:10" }
